@@ -21,15 +21,5 @@ module.exports = {
       .select('hn', 'cid', 'sex', db.raw(`concat(pname, fname, ' ', lname) as ptname`),
       'birthday', db.raw('timestampdiff(year, birthday, current_date()) as age'))
       .whereIn('hn', hns);
-  },
-
-  /*****************************************
-   * API Service
-   * ***************************************/
-  getPatientMemberList(db, hns) {
-    return db('patient')
-      .select('hn', 'sex', 'pname', 'fname', 'lname',
-      db.raw('timestampdiff(year, birthday, current_date()) as age'))
-      .whereIn('hn', hns);
   }
 };

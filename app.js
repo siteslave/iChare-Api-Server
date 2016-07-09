@@ -6,9 +6,11 @@ let cookieParser = require('cookie-parser');
 let bodyParser = require('body-parser');
 let session = require('express-session');
 let cors = require('cors');
-var helmet = require('helmet');
+let helmet = require('helmet');
+let jwt = require('jsonwebtoken');
 
 let connection = require('./configure/connection');
+let jwtConfig = require('./configure/jwt');
 
 let routes = require('./routes/index');
 let login = require('./routes/login');
@@ -59,6 +61,41 @@ let auth = (req, res, next) => {
   }
 };
 
+let checkToken = (req, res, next) => {
+
+  // check header or url parameters or post parameters for token
+  let token = req.body.token || req.query.token || req.headers['x-access-token'];
+  let secretKey = jwtConfig.getSecretKey();
+
+  // decode token
+  if (token) {
+    // verifies secret and checks exp
+    jwt.verify(token, secretKey, (err, decoded) => {
+      if (err) {
+        return res.status(403).send({
+          success: false,
+          msg: 'Authentication failed.'
+        });
+      } else {
+        // if everything is good, save to request for use in other routes
+        req.decoded = decoded;
+        next();
+      }
+    });
+
+  } else {
+
+    // if there is no token
+    // return an error
+    return res.status(403).send({
+        success: false,
+        msg: 'No token provided.'
+    });
+
+  }
+
+};
+
 app.use(function(req,res,next){
   res.locals.session = req.session;
   next();
@@ -74,7 +111,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/login', apiLogin);
-app.use('/api/v1/patient', api1Patient);
+app.use('/api/v1/patient', checkToken, api1Patient);
 
 app.use('/partials', auth, partials);
 app.use('/patient', auth, patient);

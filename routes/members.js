@@ -43,7 +43,9 @@ router.post('/', (req, res, next) => {
             member.patients.forEach(v => {
               let obj = {};
               obj.member_id = memberId[0];
-              obj.patient_hn = v;
+              obj.patient_hn = v.hn;
+              obj.ptname = v.ptname;
+              obj.birth = v.birth;
               obj.active_status = 'Y';
               obj.hash_key = hat();
               data.push(obj);
@@ -98,10 +100,14 @@ router.put('/', (req, res, next) => {
         member.patients.forEach(v => {
           let obj = {};
           obj.member_id = memberId;
-          obj.patient_hn = v;
+          obj.patient_hn = v.hn;
+          obj.ptname = v.ptname;
+          obj.birth = v.birth;
           obj.active_status = 'Y';
           obj.hash_key = hat();
           data.push(obj);
+          console.log(data);
+
         });
         return Member.savePatient(db, data);
       })

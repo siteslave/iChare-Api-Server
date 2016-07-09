@@ -45,7 +45,7 @@ angular.module('app.members.Dialogs', [])
       data.patients = [];
 
       $scope.selectedPatient.forEach(v => {
-        data.patients.push(v.hn);
+        data.patients.push({ hn: v.hn, ptname: v.ptname, birth: moment(v.birthday2).format('YYYY-MM-DD') });
       });
 
       if (data.firstName && data.lastName && data.birthDate && data.cid) {
@@ -94,6 +94,7 @@ angular.module('app.members.Dialogs', [])
                 data.rows.forEach(v => {
                   let obj = {};
                   obj.ptname = v.ptname;
+                  obj.birthday2 = v.birthday;
                   obj.birthday = `${moment(v.birthday).format('DD/MM')}/${moment(v.birthday).get('year') + 543}`;
                   obj.age = v.age;
                   obj.cid = v.cid;
@@ -209,7 +210,7 @@ angular.module('app.members.Dialogs', [])
       data.patients = [];
 
       $scope.selectedPatient.forEach(v => {
-        data.patients.push(v.hn);
+        data.patients.push({ hn: v.hn, ptname: v.ptname, birth: moment(v.birthday2).format('YYYY-MM-DD') });
       });
 
       if (data.firstName && data.lastName && data.birthDate && data.cid) {
@@ -258,6 +259,7 @@ angular.module('app.members.Dialogs', [])
                 data.rows.forEach(v => {
                   let obj = {};
                   obj.ptname = v.ptname;
+                  obj.birthday2 = v.birthday;
                   obj.birthday = `${moment(v.birthday).format('DD/MM')}/${moment(v.birthday).get('year') + 543}`;
                   obj.age = v.age;
                   obj.cid = v.cid;

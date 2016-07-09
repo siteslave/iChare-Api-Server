@@ -6,6 +6,7 @@ let crypto = require('crypto');
 
 let jwt = require('../../configure/jwt');
 let member = require('../../models/member');
+let encrypt = require('../../models/encrypt');
 
 router.get('/', (req, res, next) => {
   res.send({ok: true})
@@ -17,18 +18,22 @@ router.post('/', (req, res, next) => {
   // console.log(req.body.username);
   // console.log(req.body.password);
 
-  let username = req.body.username;
-  let password = req.body.password;
+  let encryptedText = req.body.params;
+
+  console.log(encryptedText);
+
+  let decrypted = encrypt.decrypt(encryptedText);
+  let params = JSON.parse(decrypted);
 
   let secretKey = jwt.getSecretKey();
   
   // check username and password 
-  if (username && password) {
-    let encryptPassword = crypto.createHash('md5').update(password).digest('hex');
-    console.log(encryptPassword);
+  if (params.username && params.password) {
+    let encryptPassword = crypto.createHash('md5').update(params.password).digest('hex');
+    // console.log(encryptPassword);
     let db = req.db;
 
-    member.checkAuth(db, username, encryptPassword)
+    member.checkAuth(db, params.username, encryptPassword)
       .then(rows => {
         console.log(rows);
         if (rows.length) {

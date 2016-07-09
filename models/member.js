@@ -18,6 +18,13 @@ module.exports = {
       .del();
   },
 
+  savePatientImage(db, memberId, hn, image) {
+    return db('member_patients')
+      .where('member_id', memberId)
+      .where('patient_hn', hn)
+      .update({ image: image });
+  },
+
   list(db, limit, offset) {
     return db('members as m')
       .select('m.member_id', 'm.register_date', 'm.first_name', 'm.last_name', 't.name as title_name', 'm.username',
@@ -106,5 +113,35 @@ module.exports = {
     return db('member_patients')
       .distinct('patient_hn', 'hash_key')
       .where('member_id', memberId);
+  },
+
+    /*****************************************
+   * API Service
+   * ***************************************/
+  getPatientMemberList(db, memberId) {
+    return db('member_patients')
+      .select('patient_hn', 'ptname', 'birth', 'image', 'is_default',
+      db.raw('timestampdiff(year, birth, current_date()) as age'))
+      .where('member_id', memberId);
+  },
+
+  setDefault(db, memberId, hn) {
+    return db('member_patients')
+      .where('member_id', memberId)
+      .where('patient_hn', hn)
+      .update({ is_default: 'Y' });
+  },
+
+  clearDefault(db, memberId) {
+    return db('member_patients')
+      .where('member_id', memberId)
+      .update({ is_default: 'N' });
+  },
+
+  savePhoto(db, memberId, hn, image) {
+    return db('member_patients')
+      .where('member_id', memberId)
+      .where('patient_hn', hn)
+      .update({ image: image });
   }
 };
