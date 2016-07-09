@@ -1,0 +1,52 @@
+html, body {
+  background-color: #e9eaed;
+  height: 100%;
+  //overflow:hidden;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-button {
+  width: 0px;
+  height: 0px;
+}
+::-webkit-scrollbar-thumb {
+  background: #e0e0e0;
+  border: 0px none #ffffff;
+  border-radius: 50px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #E0E0E0;
+}
+::-webkit-scrollbar-thumb:active {
+  background: #9E9E9E;
+}
+::-webkit-scrollbar-track {
+  background: #eeeeee;
+  border: 0px none #ffffff;
+  border-radius: 50px;
+}
+::-webkit-scrollbar-track:hover {
+  background: #eee;
+}
+::-webkit-scrollbar-track:active {
+  background: #E0E0E0;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+body {
+  background-image: #737373;
+}
+
+md-sidenav {
+  fill: #737373;
+  height: 100%;
+}
+
+table.md-table td.md-cell {
+    font-size: 14px;
+}

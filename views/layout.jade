@@ -1,0 +1,81 @@
+doctype html
+html(lang="en")
+head
+  title Smart HRM System V1.0.0
+
+  meta(name="viewport", content="width=device-width, initial-scale=1")
+  link(rel="stylesheet", href="/vendor/angular-material/angular-material.min.css")
+  link(rel="stylesheet", href="/libs/md-icons/material-icons.css")
+  link(rel="stylesheet", href="/vendor/angular-material-data-table/dist/md-data-table.min.css")
+  link(rel="stylesheet", href="/css/style.css")
+
+
+  script(src="/vendor/angular/angular.js")
+  script(src="/vendor/angular-animate/angular-animate.min.js")
+  script(src="/vendor/angular-aria/angular-aria.min.js")
+  script(src="/vendor/angular-messages/angular-messages.min.js")
+  script(src="/vendor/angular-material/angular-material.min.js")
+  script(src="/vendor/angular-ui-router/release/angular-ui-router.min.js")
+  script(src="/vendor/angular-material-data-table/dist/md-data-table.min.js")
+  script(src="/vendor/moment/min/moment-with-locales.min.js")
+  script(src="/vendor/lodash/dist/lodash.min.js")
+
+  script(src="/js/app.js")
+  script(src="/js/utils/basic.js")
+  script(src="/js/utils/config.js")
+  script(src="/js/layouts/sidenav.js")
+  script(src="/js/layouts/service.js")
+  script(src="/js/layouts/toolbar.js")
+  script(src="/js/members/controller.js")
+  script(src="/js/members/dialogs.js")
+  script(src="/js/members/service.js")
+
+  block scripts
+
+
+body(ng-app="app")
+
+  div(layout="column", style="height: 100%")
+
+    section(layout="row", flex, style="height: 100%")
+      div(ng-controller="SideNavCtrl", style="height: 100%")
+        md-sidenav.md-sidenav-left(md-component-id="left", md-is-locked-open="$mdMedia('gt-md')", md-disable-backdrop="")
+
+          md-toolbar.md-hue-2.md-whiteframe-z1
+            div.md-toolbar-tools
+              md-button.md-icon-button(aria-label="Main", href="#/")
+                md-ico.material-icons desktop_windows
+              h2
+                span iChare
+          md-content
+            md-subheader Main Menu
+              md-menu-content
+                md-menu-item
+                  md-button(ui-sref="meetings")
+                    md-icon(md-menu-align-target)
+                      i.material-icons business_center
+                    | ทะเบียนสมาชิก
+            md-divider
+            md-subheader Tools
+              md-menu-content
+                md-menu-item
+                  md-button(ng-click="changePassword($event)")
+                    md-icon(md-menu-align-target)
+                      i.material-icons account_circle
+                    | เปลี่ยนรหัสผ่าน
+                md-menu-item
+                  md-button(href="/login/logout")
+                    md-icon(md-menu-align-target)
+                      i.material-icons exit_to_app
+                    | ออกจากระบบ
+
+      md-content(layout="column", layout-fill, layout-align="top center", style="background-color: #e9ebee;")
+        div(layout="column", layout-fill, ng-controller="ToolbarCtrl")
+          md-toolbar.md-hue-2
+            div.md-toolbar-tools
+              md-button.md-icon-button(aria-label="Toggle", ng-click="toggleLeft()", hide-gt-sm)
+                md-icon.material-icons menu
+
+              h2 Members Management System
+          div
+            block content

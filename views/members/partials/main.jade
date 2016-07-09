@@ -1,0 +1,85 @@
+md-toolbar.md-hue-2(ng-show="!showSearch")
+  div.md-toolbar-tools
+    h2
+      //- i.material-icons group
+      | &nbsp; รายชื่อสมาชิก (Members)
+    span(flex)
+    md-button(aria-label="Search", ng-click="showSearch = !showSearch")
+      md-icon.material-icons search
+
+md-toolbar(ng-show="showSearch").md-hue-2.md-whiteframe-z1
+  div.md-toolbar-tools
+    md-button(ng-click="hideSearch()" aria-label="Back")
+      md-icon.material-icons keyboard_backspace
+    h3(flex="10") Back
+
+    md-input-container(md-theme="input", flex="", class="md-input-theme", style="padding-top: 32px;")
+      label &nbsp;
+      input(ng-model="searchQuery", placeholder="พิมพ์ชื่อ หรือ เลขบัตรประชาชน เพื่อค้นหา", style="color: #fff;", ng-keypress="enterSearch($event)")
+
+    md-button(aria-label="Search", ng-click="showSearch = !showSearch", ng-if="!showSearch")
+      md-icon.material-icons search
+
+    md-button(aria-label="Search", ng-click="search()", ng-if="showSearch")
+      md-icon.material-icons search
+
+md-progress-linear(md-mode="indeterminate", ng-show="showLoading")
+md-button.md-fab.md-fab-bottom-right(aria-label="Add", ng-click="register($event)")
+  md-icon.material.icons person_add
+
+div(layout-padding)
+  md-content
+    md-table-container
+      table(md-table)
+        thead(md-head)
+          tr(md-row)
+            th(md-column, md-numeric) #
+            th(md-column) ชื่อผู้ใช้งาน
+            th(md-column) เลขบัตรประชาชน
+            th(md-column) ชื่อ - สกุล
+            th(md-column) วันเกิด
+            th(md-column) ใช้งาน
+            th(md-column)
+        tbody(md-body)
+          tr(md-row, ng-if="!members.length")
+            td(md-cell, colspan="7") ไม่พบรายการ
+          tr(md-row, ng-repeat="m in members", ng-if="members.length")
+            td(md-cell) {{ $index + 1 }}
+            td(md-cell) {{ m.username }}
+            td(md-cell) {{ m.cid }}
+            td(md-cell) {{ m.fullname }}
+            td(md-cell) {{ m.birthdate }}
+            td(md-cell)
+              i.material-icons(ng-if="m.activeStatus == 'Y'") check_box
+              i.material-icons(ng-if="m.activeStatus == 'N'") check_box_outline_blank
+            td(md-cell)
+
+              md-menu
+                md-button(aria-label="More", ng-click="openMenu($mdOpenMenu, $event)").md-icon-button
+                  md-icon.material-icons more_vert
+
+                md-menu-content(width="4")
+                  md-menu-item
+                    md-button(ng-click="update($event, m.memberId)")
+                      md-icon.material-icons create
+                      | &nbsp; แก้ไขข้อมูล
+                  //- md-menu-item
+                  //-   md-button(ng-click="info($event, m)")
+                  //-     md-icon.material-icons group
+                  //-     | &nbsp; ข้อมูลคนไข้
+                  md-menu-item
+                    md-button(ng-click="changePassword($event, m)")
+                      md-icon.material-icons vpn_key
+                      | &nbsp; เปลี่ยนรหัสผ่าน
+                  md-divider
+                  md-menu-item
+                    md-button(ng-click="toggleActive($event, m)").md-warn
+                      md-icon.material-icons cached
+                      | &nbsp; เปลี่ยนสถานะสิทธิ์การใช้งาน
+
+
+      md-table-pagination(md-limit="query.limit", md-page="query.page", md-total="{{ total }}",
+        md-on-paginate="onPaginate",
+        md-options="[5, 20, 30, 50]",
+        md-label="{page: 'หน้า', rowsPerPage: 'เรคอร์ดต่อหน้า', of: 'จาก'}"
+        md-page-select="", ng-if="showPaging")

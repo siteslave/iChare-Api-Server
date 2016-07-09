@@ -1,0 +1,24 @@
+extends layout-login
+
+block content
+  form(name="frmLogin", method="post", action="/login", layout-padding)
+    div(layout="column", layout-fill, layout-align="top center")
+      md-card(style="width: 460px;")
+        md-card-title
+          h2
+            i.material-icons vpn_key
+            | &nbsp;&nbsp;ล๊อกอินเข้าสู่โปรแกรม
+
+        md-card-content
+          if error
+            span(style="color: red;") #{error}
+          div(layout-gt-sm="column")
+            md-input-container.md-block(flex-gt-sm)
+              label ชื่อผู้ใช้งาน
+              input(ng-model="username", name="username", ng-required="true")
+            md-input-container.md-block(flex-gt-sm)
+              label รหัสผ่าน
+              input(type="password", ng-model="password", name="password", ng-required="true")
+          section(layout="row", layout-sm="column", layout-align="center center")
+            md-button.md-raised.md-primary(type="submit", ng-disabled="frmLogin.$invalid")
+              | เข้าสู่โปรแกรม

@@ -1,0 +1,119 @@
+md-dialog(aria-label="New Employee", ng-cloak, flex="80")
+  form(name="frmNew")
+    md-toolbar
+      div.md-toolbar-tools
+        h2.md-headline
+          md-icon.material-icons person_add
+          | แก้ไขข้อมูลลงทะเบียนสมาชิก
+        span(flex)
+        md-button.md-icon-button(ng-click="cancel()")
+          md-icon(aria-label="Close dialog").material-icons clear
+
+    md-dialog-content
+      md-tabs(md-dynamic-height, md-border-bottom).md-primary
+        md-tab(label="ข้อมูลทั่วไป")
+          md-content.md-padding
+            div(layout="row")
+              div(flex)
+              div(flex="10", style="text-align: right;")
+                div(style="height: 45px; line-height: 40px;")
+                  label วันที่ลงทะเบียน
+              div(flex="20")
+                md-datepicker(ng-model="member.registerDate" md-placeholder="วันที่ลงทะเบียน")
+            div(layout="row")
+              div(flex="20")
+                md-input-container.md-block.md-icon-float(flex-gt-sm)
+                    label คำนำหน้า
+                    md-icon.material-icons class
+                    md-select(ng-model="member.titleId", ng-required="true")
+                      md-option(ng-repeat="t in titles", value="{{t.id}}")
+                        | {{t.name}}
+              div(flex)
+                md-input-container.md-block.md-icon-float
+                  label ชื่อ
+                  md-icon.material-icons account_box
+                  input(ng-model="member.firstName", ng-required="true")
+              div(flex)
+                md-input-container.md-block.md-icon-float
+                  label สกุล
+                  input(ng-model="member.lastName", ng-required="true")
+            div(layout="row")
+              div(flex="5")
+                div(style="height: 94px; line-height: 80px;")
+                  label วันเกิด
+              div(flex="20")
+                br
+                md-datepicker(ng-model="member.birthDate", ng-required="true", md-placeholder="วันเกิด")
+              div(flex="20")
+                md-input-container.md-block.md-icon-float(flex-gt-sm)
+                  label เพศ
+                  md-icon.material-icons supervisor_account
+                  md-select(ng-model="member.sex", ng-required="true")
+                    md-option(ng-repeat="s in sexes", value="{{s.id}}")
+                      | {{s.name}}
+              div(flex)
+                md-input-container.md-block.md-icon-float
+                  label เลขที่บัตรประชาชน
+                  md-icon.material-icons credit_card
+                  input(ng-model="member.cid", ng-required="true")
+            div(layout="row")
+              div(flex)
+                md-input-container.md-block(flex-gt-sm)
+                  label โทรศัพท์
+                  md-icon.material-icons contact_phone
+                  input(type="text", ng-model="member.telephone", ng-required="true")
+              div(flex)
+                md-input-container.md-block(flex-gt-sm)
+                  label อีเมล์
+                  md-icon.material-icons contact_mail
+                  input(type="email", ng-model="member.email")
+
+        md-tab(label="ข้อมูลผู้ป่วย")
+          md-content.md-padding
+            div(layout="row")
+              div(flex="35")
+
+                md-progress-linear(md-mode="indeterminate", ng-show="loading")
+                md-input-container(md-no-float, style="margin:15px 2px 0 2px; padding: 0;").md-block
+                  input(placeholder="ระบุเลขบัตรประชาชน ผู้ป่วย", ng-model="query", ng-keypress="search($event)")
+
+                md-subheader.md-no-sticky แสดง {{ patient.length | number }} เรคคอร์ด
+                md-content(style="height: 300px;")
+                  md-list
+                    md-list-item.md-2-line(ng-repeat="p in patient", ng-click="addPatient($event, p)")
+                      img(src="/img/avatar-man.png", ng-if="p.sex == '1'").md-avatar
+                      img(src="/img/avatar-woman.png", ng-if="p.sex == '2'").md-avatar
+                      div.md-list-item-text(layout="column")
+                        h3 {{ p.ptname }}
+                        p HN {{ p.hn }} วันเกิด {{ p.birthday }}
+                        p คลิกนิก {{ p.clinic_name }}
+
+              div(flex)
+                md-subheader.md-no-sticky รายชื่อที่เลือกไว้ [ {{ selectedPatient.length}} คน ]
+                md-table-container
+                  table(md-table)
+                    thead(md-head)
+                      tr(md-row)
+                        th(md-column) #
+                        th(md-column) เลขที่บัตรประชาชน
+                        th(md-column) ชื่อ - สกุล
+                        th(md-column) อายุ (ปี)
+                        th(md-column)
+                    tbody(md-body)
+                      tr(md-row, ng-if="!selectedPatient.length")
+                        td(md-cell, colspan="5") ไม่พบรายการ
+                      tr(md-row, ng-repeat="s in selectedPatient", ng-if="selectedPatient.length")
+                        td(md-cell) {{ $index + 1 }}
+                        td(md-cell) {{ s.cid }}
+                        td(md-cell) {{ s.ptname }}
+                        td(md-cell) {{ s.age }}
+                        td(md-cell)
+                          md-button(aria-label="More", ng-click="remove(s)").md-icon-button
+                            md-icon.material-icons delete
+
+    md-dialog-actions(layout="row")
+      span(flex)
+      md-button(ng-click="save()", ng-disabled="frmNew.$invalid").md-raised.md-primary
+        | ปรับปรุงข้อมูล
+      md-button(ng-click="cancel()")
+        | ยกเลิก
