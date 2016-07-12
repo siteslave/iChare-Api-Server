@@ -21,5 +21,18 @@ module.exports = {
       .select('hn', 'cid', 'sex', db.raw(`concat(pname, fname, ' ', lname) as ptname`),
       'birthday', db.raw('timestampdiff(year, birthday, current_date()) as age'))
       .whereIn('hn', hns);
-  }
+  },
+
+  getAppointment(db, hns, start, end) {
+    return db('oapp as a')
+      .select('a.nextdate', 'a.nexttime', db.raw('concat(p.pname, " ", p.fname, " ", p.lname) as ptname'), 'c.name as clinic_name', 'd.department', 'dt.name as doctor_name')
+      .innerJoin('patient as p', 'p.hn', 'a.hn')
+      .leftJoin('clinic as c', 'c.clinic', 'a.clinic')
+      .leftJoin('kskdepartment as d', 'd.depcode', 'a.depcode')
+      .leftJoin('doctor as dt', 'dt.code', 'a.doctor')
+      .whereBetween('a.nextdate', [start, end])
+      .whereIn('a.hn', hns)
+      .whereRaw('(a.patient_visit<>"Y" or a.patient_visit is null)')
+      .orderBy('a.nextdate', 'desc');
+  } 
 };

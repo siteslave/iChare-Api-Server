@@ -20,9 +20,12 @@ let dialogs = require('./routes/dialogs');
 let basic = require('./routes/basic');
 let patient = require('./routes/patient');
 let members = require('./routes/members');
+let appoint = require('./routes/appoint');
 
+// API
 let apiLogin = require('./routes/api/login');
-let api1Patient = require('./routes/api/v1/patient');
+let apiPatient = require('./routes/api/patient');
+let apiMember = require('./routes/api/members');
 
 let app = express();
 
@@ -52,7 +55,10 @@ app.use(session({
 let auth = (req, res, next) => {
   if (!req.session.logged) {
     if (req.xhr) {
-      res.send({ok: false, msg: 'Access denied', code: 401})
+      return res.status(403).send({
+          success: false,
+          msg: 'Authentication failed.'
+        });
     } else {
       res.redirect('/login')
     }
@@ -111,11 +117,13 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/login', apiLogin);
-app.use('/api/v1/patient', checkToken, api1Patient);
+app.use('/api/patient', checkToken, apiPatient);
+app.use('/api/member', checkToken, apiMember);
 
 app.use('/partials', auth, partials);
 app.use('/patient', auth, patient);
 app.use('/members', auth, members);
+app.use('/appoint', auth, appoint);
 app.use('/dialogs', auth, dialogs);
 app.use('/users', auth, users);
 app.use('/login', login);
@@ -138,6 +146,7 @@ app.use((req, res, next) => {
 if (app.get('env') === 'development') {
   app.use((err, req, res, next) => {
     res.status(err.status || 500);
+    console.log(err);
     res.send({
       message: err.message,
       error: err
@@ -149,6 +158,7 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 app.use((err, req, res, next) => {
   res.status(err.status || 500);
+  console.log(err);
   res.send({
     message: err.message,
     error: {}

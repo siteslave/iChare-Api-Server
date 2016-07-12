@@ -11,4 +11,8 @@ router.get('/members/main', (req, res, next) => {
   res.render('members/partials/main')
 });
 
+router.get('/appoint/main', (req, res, next) => {
+  res.render('appoint/partials/main')
+});
+
 module.exports = router;

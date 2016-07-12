@@ -109,15 +109,17 @@ module.exports = {
   /*****************************************************
    * API Service
    *****************************************************/
+  getAllPatientsHn(db) {
+    return db('member_patients')
+      .distinct('patient_hn');
+  },
+
   getPatientsHn(db, memberId) {
     return db('member_patients')
       .distinct('patient_hn', 'hash_key')
       .where('member_id', memberId);
   },
 
-    /*****************************************
-   * API Service
-   * ***************************************/
   getPatientMemberList(db, memberId) {
     return db('member_patients')
       .select('patient_hn', 'ptname', 'birth', 'image', 'is_default',
@@ -143,5 +145,11 @@ module.exports = {
       .where('member_id', memberId)
       .where('patient_hn', hn)
       .update({ image: image });
+  },
+
+  saveDeviceToken(db, memberId, deviceToken) {
+    return db('members')
+      .where('member_id', memberId)
+      .update({ device_token: deviceToken });
   }
 };

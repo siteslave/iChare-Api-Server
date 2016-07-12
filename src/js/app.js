@@ -6,7 +6,8 @@ angular.module('app', [
   'md.data.table',
   'app.layouts.SideNav',
   'app.layouts.Toolbar',
-  'app.members.Controller'
+  'app.members.Controller',
+  'app.appoint.Controller'
 ])
   .config(($mdThemingProvider, $stateProvider, $urlRouterProvider, $mdDateLocaleProvider) => {
     $mdThemingProvider.theme('default')
@@ -49,10 +50,10 @@ angular.module('app', [
         templateUrl: '/partials/members/main',
         controller: 'MemberCtrl'
       })
-      .state('reports', {
-        url: '/reports',
-        templateUrl: '/partials/reports',
-        controller: 'ReportCtrl'
+      .state('appoint', {
+        url: '/appoint',
+        templateUrl: '/partials/appoint/main',
+        controller: 'AppointCtrl'
       });
 
   });
