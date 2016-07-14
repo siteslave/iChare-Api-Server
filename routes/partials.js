@@ -11,8 +11,16 @@ router.get('/members/main', (req, res, next) => {
   res.render('members/partials/main')
 });
 
-router.get('/appoint/main', (req, res, next) => {
-  res.render('appoint/partials/main')
+router.get('/appoint-notify/main', (req, res, next) => {
+  res.render('appoint-notify/partials/main')
+});
+
+router.get('/service-notify/main', (req, res, next) => {
+  res.render('service-notify/partials/main')
+});
+
+router.get('/hhc/main', (req, res, next) => {
+  res.render('hhc/partials/main')
 });
 
 module.exports = router;

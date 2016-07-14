@@ -7,7 +7,9 @@ angular.module('app', [
   'app.layouts.SideNav',
   'app.layouts.Toolbar',
   'app.members.Controller',
-  'app.appoint.Controller'
+  'app.appoint.notify.Controller',
+  'app.service.notify.Controller',
+  'app.hhc.main.Controller'
 ])
   .config(($mdThemingProvider, $stateProvider, $urlRouterProvider, $mdDateLocaleProvider) => {
     $mdThemingProvider.theme('default')
@@ -34,7 +36,7 @@ angular.module('app', [
     };
 
     $mdDateLocaleProvider.formatDate = function (date) {
-      return moment(date).format('DD/MM/YYYY');
+      return `${moment(date).format('DD/MM')}/${moment(date).get('year') + 543}`;
     };
 
     $mdDateLocaleProvider.parseDate = function (dateString) {
@@ -50,10 +52,20 @@ angular.module('app', [
         templateUrl: '/partials/members/main',
         controller: 'MemberCtrl'
       })
-      .state('appoint', {
-        url: '/appoint',
-        templateUrl: '/partials/appoint/main',
-        controller: 'AppointCtrl'
+      .state('appoint-notify', {
+        url: '/appoint-notify',
+        templateUrl: '/partials/appoint-notify/main',
+        controller: 'AppointNotifyCtrl'
+      })
+      .state('hhc', {
+        url: '/hhc',
+        templateUrl: '/partials/hhc/main',
+        controller: 'HHCMainCtrl'
+      })
+      .state('service-notify', {
+        url: '/service-notify',
+        templateUrl: '/partials/service-notify/main',
+        controller: 'ServiceNotifyCtrl'
       });
 
   });

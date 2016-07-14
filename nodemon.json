@@ -1,4 +1,7 @@
 {
   "verbose": true,
-  "ignore": ["src/*", "public/javascripts/*"]
+  "ignore": ["src/*", "public/js/*"],
+  "execMap": {
+    "pde": "processing --sketch={{pwd}} --run"
+  }
 }

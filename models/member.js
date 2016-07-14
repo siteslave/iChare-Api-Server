@@ -106,13 +106,13 @@ module.exports = {
       .limit(1);
   },
 
-  /*****************************************************
-   * API Service
-   *****************************************************/
   getAllPatientsHn(db) {
     return db('member_patients')
       .distinct('patient_hn');
   },
+  /*****************************************************
+   * API Service
+   *****************************************************/
 
   getPatientsHn(db, memberId) {
     return db('member_patients')
@@ -122,15 +122,15 @@ module.exports = {
 
   getPatientMemberList(db, memberId) {
     return db('member_patients')
-      .select('patient_hn', 'ptname', 'birth', 'image', 'is_default',
+      .select('hash_key', 'ptname', 'birth', 'image', 'is_default',
       db.raw('timestampdiff(year, birth, current_date()) as age'))
       .where('member_id', memberId);
   },
 
-  setDefault(db, memberId, hn) {
+  setDefault(db, memberId, hashKey) {
     return db('member_patients')
       .where('member_id', memberId)
-      .where('patient_hn', hn)
+      .where('hash_key', hashKey)
       .update({ is_default: 'Y' });
   },
 
@@ -140,10 +140,10 @@ module.exports = {
       .update({ is_default: 'N' });
   },
 
-  savePhoto(db, memberId, hn, image) {
+  savePhoto(db, memberId, hashKey, image) {
     return db('member_patients')
       .where('member_id', memberId)
-      .where('patient_hn', hn)
+      .where('hash_key', hashKey)
       .update({ image: image });
   },
 

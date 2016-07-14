@@ -20,7 +20,8 @@ let dialogs = require('./routes/dialogs');
 let basic = require('./routes/basic');
 let patient = require('./routes/patient');
 let members = require('./routes/members');
-let appoint = require('./routes/appoint');
+let appointNotify = require('./routes/appoint-notify');
+let serviceNotify = require('./routes/service-notify');
 
 // API
 let apiLogin = require('./routes/api/login');
@@ -123,7 +124,8 @@ app.use('/api/member', checkToken, apiMember);
 app.use('/partials', auth, partials);
 app.use('/patient', auth, patient);
 app.use('/members', auth, members);
-app.use('/appoint', auth, appoint);
+app.use('/appoint-notify', auth, appointNotify);
+app.use('/service-notify', auth, serviceNotify);
 app.use('/dialogs', auth, dialogs);
 app.use('/users', auth, users);
 app.use('/login', login);

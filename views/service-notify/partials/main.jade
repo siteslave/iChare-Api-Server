@@ -1,0 +1,48 @@
+md-toolbar.md-hue-2
+  div.md-toolbar-tools
+    i.material-icons date_range
+    h2
+      | &nbsp; แจ้งเตือนการเข้ารับบริการ
+
+md-progress-linear(md-mode="indeterminate", ng-show="showLoading")
+md-card
+  md-card-content
+    div(layout="row", layout-fill)
+      div(flex)
+      div(flex="20")
+        md-datepicker(ng-model="date", md-placeholder="Enter date")
+
+      div(flex="30")
+        md-button.md-raised.md-primary(ng-click="getList()") ค้นหา
+        md-button.md-raised.md-warn(ng-click="sendNotification()") แจ้งเตือนนัดหมาย
+
+    
+    md-table-container
+      table(md-table)
+        thead(md-head)
+          tr(md-row)
+            th(md-column, md-numeric)
+              md-checkbox(ng-model="isAll", ng-click="toggleAll()")
+            th(md-column) ชื่อ - สกุล
+            th(md-column) วันที่
+            th(md-column) เวลา
+            th(md-column) แผนก
+            th(md-column) วินิจฉัย
+        tbody(md-body)
+          tr(md-row, ng-if="!patients.length")
+            td(md-cell, colspan="5") ไม่พบรายการ
+          tr(md-row, ng-if="patients.length", ng-repeat="p in patients")
+            td(md-cell)
+              md-checkbox(ng-checked="exists(p.hn)", ng-click="toggle(p.hn)", aria-label="send")
+            td(md-cell) {{ p.ptname }}
+            td(md-cell) {{ p.vstdate }}
+            td(md-cell) {{ p.vsttime }}
+            td(md-cell) {{ p.department }}
+            td(md-cell) {{ p.clinic_name }}
+            td(md-cell) {{ p.icd_code }} {{ p.icd_name }}
+
+      //- md-table-pagination(md-limit="query.limit", md-page="query.page", md-total="{{ total }}",
+      //-   md-on-paginate="onPaginate",
+      //-   md-options="[5, 20, 30, 50]",
+      //-   md-label="{page: 'หน้า', rowsPerPage: 'เรคอร์ดต่อหน้า', of: 'จาก'}"
+      //-   md-page-select="", ng-if="showPaging")
