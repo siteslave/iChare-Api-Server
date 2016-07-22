@@ -10,7 +10,7 @@ module.exports = {
         port: 3306,
         database: 'ichare',
         user: 'root',
-        password: '',
+        password: '043789124',
         charset: 'utf8'
       }
     });
@@ -27,7 +27,7 @@ module.exports = {
         port: 3306,
         database: 'hos',
         user: 'root',
-        password: '',
+        password: '043789124',
         charset: 'utf8'
       }
     });

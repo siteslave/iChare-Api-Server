@@ -122,7 +122,7 @@ module.exports = {
 
   getPatientMemberList(db, memberId) {
     return db('member_patients')
-      .select('hash_key', 'ptname', 'birth', 'image', 'is_default',
+      .select('hash_key', 'ptname', 'image', 'is_default',
       db.raw('timestampdiff(year, birth, current_date()) as age'))
       .where('member_id', memberId);
   },

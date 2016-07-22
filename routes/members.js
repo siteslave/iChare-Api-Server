@@ -5,6 +5,7 @@ let router = express.Router();
 let moment = require('moment');
 let crypto = require('crypto');
 let hat = require('hat');
+let randomjs = require('random-js');
 
 let Member = require('../models/member');
 let Patient = require('../models/his/patient');
@@ -37,6 +38,8 @@ router.post('/', (req, res, next) => {
         _member.username = member.username;
         _member.password = crypto.createHash('md5').update(member.password).digest('hex');
 
+        let random = new randomjs();
+          
         Member.save(db, _member)
           .then((memberId) => {
             let data = [];
@@ -47,7 +50,7 @@ router.post('/', (req, res, next) => {
               obj.ptname = v.ptname;
               obj.birth = v.birth;
               obj.active_status = 'Y';
-              obj.hash_key = hat();
+              obj.hash_key = random.integer(1111111111111, 9999999999999);
               data.push(obj);
               console.log(obj);
             });
@@ -97,6 +100,8 @@ router.put('/', (req, res, next) => {
       .then(() => {
         console.log('success remove patient');
         let data = [];
+        let random = new randomjs();
+
         member.patients.forEach(v => {
           let obj = {};
           obj.member_id = memberId;
@@ -104,7 +109,7 @@ router.put('/', (req, res, next) => {
           obj.ptname = v.ptname;
           obj.birth = v.birth;
           obj.active_status = 'Y';
-          obj.hash_key = hat();
+          obj.hash_key = random.integer(1111111111111, 9999999999999);
           data.push(obj);
           console.log(data);
 

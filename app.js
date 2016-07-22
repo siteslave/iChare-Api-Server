@@ -20,6 +20,7 @@ let dialogs = require('./routes/dialogs');
 let basic = require('./routes/basic');
 let patient = require('./routes/patient');
 let members = require('./routes/members');
+// let hhc = require('./routes/hhc');
 let appointNotify = require('./routes/appoint-notify');
 let serviceNotify = require('./routes/service-notify');
 
@@ -27,6 +28,7 @@ let serviceNotify = require('./routes/service-notify');
 let apiLogin = require('./routes/api/login');
 let apiPatient = require('./routes/api/patient');
 let apiMember = require('./routes/api/members');
+let apiDoctor = require('./routes/api/doctor');
 
 let app = express();
 
@@ -120,6 +122,7 @@ app.use((req, res, next) => {
 app.use('/api/login', apiLogin);
 app.use('/api/patient', checkToken, apiPatient);
 app.use('/api/member', checkToken, apiMember);
+app.use('/api/doctor', checkToken, apiDoctor);
 
 app.use('/partials', auth, partials);
 app.use('/patient', auth, patient);

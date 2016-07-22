@@ -3,6 +3,7 @@
 let express = require('express');
 let _ = require('lodash');
 let cryptojs = require('crypto-js');
+let barcode = require('barcode');
 
 let router = express.Router();
 
@@ -12,13 +13,10 @@ let patient = require('../../models/his/patient');
 let encrypt = require('../../models/encrypt');
 
 router.get('/members', (req, res, next) => {
-  // console.log(req.params);
-  // console.log(req.query);
   let dbHIS = req.dbHIS;
   let db = req.db;
   let token = req.query.token;
 
-  let secretKey = jwt.getSecretKey();
   let decoded = req.decoded;
   // console.log(decoded);
 
@@ -37,8 +35,6 @@ router.get('/members', (req, res, next) => {
 
 router.post('/set-default', (req, res, next) => {
   let db = req.db;
-
-  let hn = req.body.hn;
   let decoded = req.decoded;
   let memberId = decoded.memberId;
   let encryptedText = req.body.params;
@@ -46,14 +42,15 @@ router.post('/set-default', (req, res, next) => {
   console.log(encryptedText);
 
   let decrypted = encrypt.decrypt(encryptedText);
+  console.log(decrypted);
   let params = JSON.parse(decrypted);
 
-  console.log(params);
+  // console.log(params);
 
-  if (memberId && params.hn) {
+  if (memberId && params.hashKey) {
     members.clearDefault(db, memberId)
       .then(() => {
-        return members.setDefault(db, memberId, params.hn);
+        return members.setDefault(db, memberId, params.hashKey);
       })
       .then(() => res.send({ ok: true }))
       .catch(err => res.send({ ok: false, msg: err }));
@@ -62,7 +59,6 @@ router.post('/set-default', (req, res, next) => {
 
 router.post('/save-photo', (req, res, next) => {
   let db = req.db;
-  let image = req.body.image;
 
   let decoded = req.decoded;
   let memberId = decoded.memberId;
@@ -77,6 +73,32 @@ router.post('/save-photo', (req, res, next) => {
   members.savePhoto(db, memberId, params.hashKey, params.image)
     .then(() => res.send({ ok: true }))
     .catch(err => res.send({ ok: false, msg: err }));
+});
+
+router.post('/get-barcode', (req, res, next) => {
+
+  let encryptedText = req.body.params;
+  console.log(req.body.params);
+  // console.log(encryptedText);
+
+  let decrypted = encrypt.decrypt(encryptedText);
+  // console.log(decrypted);
+  let params = JSON.parse(decrypted);
+  console.log(params.hashKey);
+  // let hashKey = params.hashKey;
+  // console.log(haskKey);
+  let code39 = barcode('ean13', {
+    data: params.hashKey,
+    width: 400,
+    height: 100,
+  });
+  
+  code39.getBase64((err, imgsrc) => {
+    console.log(imgsrc);
+    if (err) res.send({ ok: false, msg: err });
+    else res.send({ ok: true, img: imgsrc });
+  });
+
 });
 
 
