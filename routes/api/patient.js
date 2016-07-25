@@ -87,7 +87,7 @@ router.post('/get-barcode', (req, res, next) => {
   console.log(params.hashKey);
   // let hashKey = params.hashKey;
   // console.log(haskKey);
-  let code39 = barcode('ean13', {
+  let code39 = barcode('code128', {
     data: params.hashKey,
     width: 400,
     height: 100,

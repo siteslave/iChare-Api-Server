@@ -151,5 +151,13 @@ module.exports = {
     return db('members')
       .where('member_id', memberId)
       .update({ device_token: deviceToken });
+  },
+
+  getDefaultPatient(db, memberId) {
+    return db('member_patients')
+      .select('patient_hn')
+      .where('member_id', memberId)
+      .where('is_default', 'Y')
+      .limit(1);
   }
 };

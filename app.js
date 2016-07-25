@@ -29,6 +29,14 @@ let apiLogin = require('./routes/api/login');
 let apiPatient = require('./routes/api/patient');
 let apiMember = require('./routes/api/members');
 let apiDoctor = require('./routes/api/doctor');
+let apiAllergy = require('./routes/api/allergy');
+let apiPttype = require('./routes/api/pttype');
+let apiVaccine = require('./routes/api/vaccine');
+let apiScreening = require('./routes/api/screening');
+let apiLab = require('./routes/api/lab');
+let apiDrug = require('./routes/api/drug');
+let apiIpd = require('./routes/api/ipd');
+let apiOpd = require('./routes/api/opd');
 
 let app = express();
 
@@ -123,6 +131,14 @@ app.use('/api/login', apiLogin);
 app.use('/api/patient', checkToken, apiPatient);
 app.use('/api/member', checkToken, apiMember);
 app.use('/api/doctor', checkToken, apiDoctor);
+app.use('/api/allergy', checkToken, apiAllergy);
+app.use('/api/pttype', checkToken, apiPttype);
+app.use('/api/vaccine', checkToken, apiVaccine);
+app.use('/api/screening', checkToken, apiScreening);
+app.use('/api/lab', checkToken, apiLab);
+app.use('/api/drug', checkToken, apiDrug);
+app.use('/api/ipd', checkToken, apiIpd);
+app.use('/api/opd', checkToken, apiOpd);
 
 app.use('/partials', auth, partials);
 app.use('/patient', auth, patient);
