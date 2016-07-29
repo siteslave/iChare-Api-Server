@@ -47,8 +47,6 @@ router.post('/detail', (req, res, next) => {
 
   let encryptedText = req.body.params;
 
-  console.log(encryptedText);
-
   let decrypted = encrypt.decrypt(encryptedText);
   let params = JSON.parse(decrypted);
   let an = params.an;

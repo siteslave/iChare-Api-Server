@@ -9,6 +9,8 @@ let router = express.Router();
 
 let doctor = require('../../models/doctor');
 let encrypt = require('../../models/encrypt');
+let member = require('../../models/member');
+let opd = require('../../models/his/opd');
 
 router.post('/hhc', (req, res, next) => {
   let db = req.db;
@@ -22,28 +24,31 @@ router.post('/hhc', (req, res, next) => {
 
   let decrypted = encrypt.decrypt(encryptedText);
   let params = JSON.parse(decrypted);
+  let data;
 
-  console.log(params);
+  member.getPatientHnFromHashKey(db, params.hashKey)
+    .then(rows => {
+      console.log(rows);
+      let hn = rows[0].patient_hn;
+      data = {
+          hn: hn,
+          date_serv: params.dateServ,
+          time_serv: params.timeServ,
+          community_service_id: params.communityServiceId,
+          cc: params.cc,
+          sbp: params.sbp,
+          dbp: params.dbp,
+          weight: params.weight,
+          height: params.height,
+          fbs: params.fbs,
+          advice: params.advice,
+          pluse: params.pluse,
+          doctor_id: doctorId,
+          created_at: moment().format('YYYY-MM-DD HH:mm:ss')
+        };
 
-  let data = {
-    hn: params.hn,
-    date_serv: params.dateServ,
-    time_serv: params.timeServ,
-    community_service_id: params.communityServiceId,
-    cc: params.cc,
-    sbp: params.sbp,
-    dbp: params.dbp,
-    weight: params.weight,
-    height: params.height,
-    fbs: params.fbs,
-    advice: params.advice,
-    pluse: params.pluse,
-    doctor_id: doctorId,
-    created_at: moment().format('YYYY-MM-DD HH:mm:ss')
-  };
-
-  // check duplicated
-  doctor.checkHhcDuplicated(db, params.dateServ, params.communityServiceId)
+      return doctor.checkHhcDuplicated(db, params.dateServ, params.communityServiceId);
+    })
     .then(rows => {
       if (rows[0].total) {
         res.send({ ok: false, msg: 'รายการเยี่ยมซ้ำ' })
@@ -74,9 +79,12 @@ router.post('/hhc/history', (req, res, next) => {
 
   console.log(params);
 
-  let hn = params.hn;
-  
-  doctor.getHhcHistory(db, hn)
+  member.getPatientHnFromHashKey(db, params.hashKey)
+    .then(rows => {
+      console.log(rows);
+      let hn = rows[0].patient_hn;
+      return doctor.getHhcHistory(db, hn);
+    })
     .then(rows =>  res.send({ ok: true, rows: rows }))
     .catch(err => res.send({ ok: false, msg: err }));
 });
@@ -191,5 +199,75 @@ router.post('/hhc/detail', (req, res, next) => {
     });
 
 });
+
+
+router.post('/service/history', (req, res, next) => {
+  let dbHIS = req.dbHIS;
+  let db = req.db;
+  let decoded = req.decoded;
+
+  let encryptedText = req.body.params;
+
+  let decrypted = encrypt.decrypt(encryptedText);
+  let params = JSON.parse(decrypted);
+
+  console.log(params);
+
+  let hashKey = params.hashKey;
+  // get hn
+  member.getPatientHnFromHashKey(db, hashKey)
+    .then(rows => {
+      console.log(rows);
+      let hn = rows[0].patient_hn;
+      return opd.getService(dbHIS, hn);
+    })
+    .then(rows => {
+      console.log(rows[0]);
+      let ciphertext = encrypt.encrypt(rows[0]);
+      res.send({ ok: true, data: ciphertext.toString() });
+    })
+    .catch(err => res.send({ ok: false, msg: err }));
+  
+});
+
+router.post('/service/detail', (req, res, next) => {
+  let dbHIS = req.dbHIS;
+  let db = req.db;
+  let decoded = req.decoded;
+
+  let encryptedText = req.body.params;
+
+  let decrypted = encrypt.decrypt(encryptedText);
+  let params = JSON.parse(decrypted);
+  console.log(params);
+
+  let vn = params.vn;
+  
+  let details = {};
+
+  opd.getScreening(dbHIS, vn)
+    .then(rows => {
+      details.screening = rows[0][0];
+      console.log(rows[0]);
+      return opd.getDiag(dbHIS, vn)
+    })
+    .then(rows => {
+      details.diag = rows[0];
+      console.log(rows[0]);
+      return opd.getDiag(dbHIS, vn)
+    })
+    .then(rows => {
+      details.diag = rows[0];
+      return opd.getDrug(dbHIS, vn);
+    })
+    .then(rows => {
+      details.drug = rows[0];
+      let ciphertext = encrypt.encrypt(details);
+      res.send({ ok: true, data: ciphertext.toString() });
+    })
+    .catch(err => res.send({ ok: false, msg: err }));
+  
+});
+
 
 module.exports = router;

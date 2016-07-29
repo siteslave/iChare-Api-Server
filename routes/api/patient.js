@@ -69,7 +69,8 @@ router.post('/save-photo', (req, res, next) => {
 
   let decrypted = encrypt.decrypt(encryptedText);
   let params = JSON.parse(decrypted);
-  
+  console.log(params.hashKey);
+
   members.savePhoto(db, memberId, params.hashKey, params.image)
     .then(() => res.send({ ok: true }))
     .catch(err => res.send({ ok: false, msg: err }));

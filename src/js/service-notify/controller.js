@@ -1,7 +1,7 @@
 'use strict'; 
 
 angular.module('app.service.notify.Controller', ['app.service.notify.Service'])
-  .controller('ServiceNotifyCtrl', ($scope, ServiceNotifyService) => {
+  .controller('ServiceNotifyCtrl', ($scope, $mdToast, ServiceNotifyService, AppointNotifyService) => {
     $scope.patients = [];
     $scope.date = new Date(moment().format());
     $scope.isAll = false;
@@ -67,7 +67,37 @@ angular.module('app.service.notify.Controller', ['app.service.notify.Service'])
     };
 
     $scope.sendNotification = () => {
-      alert(JSON.stringify($scope.selectedPatient));
+      
+      if ($scope.selectedPatient.length) {
+        ServiceNotifyService.send($scope.selectedPatient)
+          .then(res => {
+            let data = res.data;
+            if (data.ok) {
+              $mdToast.show(
+                $mdToast.simple()
+                  .textContent('ส่งเรียบร้อย')
+                  .position('top right')
+                  .hideDelay(3000)
+              );
+            } else {
+              $mdToast.show(
+                $mdToast.simple()
+                  .textContent('เกิดข้อผิดพลาด : ' + JSON.stringify(data.msg))
+                  .position('top right')
+                  .hideDelay(3000)
+              );
+            }
+          }, () => {
+            $mdToast.show(
+              $mdToast.simple()
+                .textContent('การเชื่อมต่อผิดพลาด')
+                .position('top right')
+                .hideDelay(3000)
+            );
+          });
+        
+      }
+
     };
 
     $scope.getList();

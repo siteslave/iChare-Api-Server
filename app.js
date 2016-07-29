@@ -37,6 +37,8 @@ let apiLab = require('./routes/api/lab');
 let apiDrug = require('./routes/api/drug');
 let apiIpd = require('./routes/api/ipd');
 let apiOpd = require('./routes/api/opd');
+let apiDash = require('./routes/api/dash');
+let apiAppointment = require('./routes/api/appointment');
 
 let app = express();
 
@@ -139,6 +141,8 @@ app.use('/api/lab', checkToken, apiLab);
 app.use('/api/drug', checkToken, apiDrug);
 app.use('/api/ipd', checkToken, apiIpd);
 app.use('/api/opd', checkToken, apiOpd);
+app.use('/api/dash', checkToken, apiDash);
+app.use('/api/appointment', checkToken, apiAppointment);
 
 app.use('/partials', auth, partials);
 app.use('/patient', auth, patient);

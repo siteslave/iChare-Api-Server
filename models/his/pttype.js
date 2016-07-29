@@ -17,7 +17,7 @@ module.exports = {
 
   getHistory(db, hn) {
     let sql = `
-    select o.vstdate, o.vsttime, pt.name as pttype_name
+    select o.vn, o.vstdate, o.vsttime, pt.name as pttype_name
     from ovst as o
     left join pttype as pt on pt.pttype=o.pttype
     where o.hn=?

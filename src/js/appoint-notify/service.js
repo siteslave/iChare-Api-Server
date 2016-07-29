@@ -6,5 +6,9 @@ angular.module('app.appoint.notify.Service', [])
       list(start, end) {
         return $http.post('/appoint-notify/list', { start: start, end: end });
       },
+
+      send(hns) {
+        return $http.post('/appoint-notify/send', { hns: hns });
+      }
     }
   });

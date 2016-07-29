@@ -14,8 +14,7 @@ md-card
 
       div(flex="30")
         md-button.md-raised.md-primary(ng-click="getList()") ค้นหา
-        md-button.md-raised.md-warn(ng-click="sendNotification()") แจ้งเตือนนัดหมาย
-
+        md-button.md-raised.md-warn(ng-click="sendNotification()", ng-disabled="!selectedPatient.length") แจ้งเตือนรับบริการ
     
     md-table-container
       table(md-table)
@@ -30,7 +29,7 @@ md-card
             th(md-column) วินิจฉัย
         tbody(md-body)
           tr(md-row, ng-if="!patients.length")
-            td(md-cell, colspan="5") ไม่พบรายการ
+            td(md-cell, colspan="6") ไม่พบรายการ
           tr(md-row, ng-if="patients.length", ng-repeat="p in patients")
             td(md-cell)
               md-checkbox(ng-checked="exists(p.hn)", ng-click="toggle(p.hn)", aria-label="send")

@@ -1,7 +1,7 @@
 'use strict'; 
 
 angular.module('app.appoint.notify.Controller', ['app.appoint.notify.Service'])
-  .controller('AppointNotifyCtrl', ($scope, AppointNotifyService) => {
+  .controller('AppointNotifyCtrl', ($scope, $mdToast, AppointNotifyService) => {
     $scope.patients = [];
     $scope.start = new Date(moment().format());
     $scope.end = new Date(moment().add('5', 'days').format());
@@ -31,13 +31,30 @@ angular.module('app.appoint.notify.Controller', ['app.appoint.notify.Service'])
               obj.department = v.department;
               $scope.patients.push(obj);
             });
+
+            $mdToast.show(
+              $mdToast.simple()
+                .textContent('เรียบร้อย')
+                .position('top right')
+                .hideDelay(3000)
+            );
+
           } else {
-            // error
-            alert(JSON.stringify(data.msg));
+            $mdToast.show(
+              $mdToast.simple()
+                .textContent('เกิดข้อผิดพลาด : ' + JSON.stringify(data.msg))
+                .position('top right')
+                .hideDelay(3000)
+            );
           }
           
         }, () => {
-          alert('connection error!');
+          $mdToast.show(
+              $mdToast.simple()
+                .textContent('การเชื่อมต่อผิดพลาด')
+                .position('top right')
+                .hideDelay(3000)
+            );
         });
     };
 
@@ -67,7 +84,36 @@ angular.module('app.appoint.notify.Controller', ['app.appoint.notify.Service'])
     };
 
     $scope.sendNotification = () => {
-      alert(JSON.stringify($scope.selectedPatient));
+      if ($scope.selectedPatient.length) {
+        AppointNotifyService.send($scope.selectedPatient)
+          .then(res => {
+            let data = res.data;
+            if (data.ok) {
+              $mdToast.show(
+                $mdToast.simple()
+                  .textContent('ส่งเรียบร้อย')
+                  .position('top right')
+                  .hideDelay(3000)
+              );
+            } else {
+              $mdToast.show(
+                $mdToast.simple()
+                  .textContent('เกิดข้อผิดพลาด : ' + JSON.stringify(data.msg))
+                  .position('top right')
+                  .hideDelay(3000)
+              );
+            }
+          }, () => {
+            $mdToast.show(
+              $mdToast.simple()
+                .textContent('การเชื่อมต่อผิดพลาด')
+                .position('top right')
+                .hideDelay(3000)
+            );
+          });
+        
+      }
+      // alert(JSON.stringify($scope.selectedPatient));
     };
 
     $scope.getList();

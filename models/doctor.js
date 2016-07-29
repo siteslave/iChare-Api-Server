@@ -59,7 +59,7 @@ module.exports = {
 
   search(db, hashKey) {
     return db('member_patients')
-      .select('patient_hn as hn', 'ptname', db.raw('timestampdiff(year, birth, current_date()) as age'))
+      .select('hash_key', 'ptname', db.raw('timestampdiff(year, birth, current_date()) as age'))
       .where('hash_key', hashKey)
       .limit(1);
   }

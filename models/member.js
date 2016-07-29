@@ -159,5 +159,53 @@ module.exports = {
       .where('member_id', memberId)
       .where('is_default', 'Y')
       .limit(1);
+  },
+
+  getPatientHnFromHashKey(db, hashKey) {
+    return db('member_patients')
+      .select('patient_hn')
+      .where('hash_key', hashKey)
+      .limit(1);
+  },
+
+  toggleAlertService(db, memberId, status) {
+    return db('members')
+      .where('member_id', memberId)
+      .update({alert_service: status});
+  },
+
+  toggleAlertAppoint(db, memberId, status) {
+    return db('members')
+      .where('member_id', memberId)
+      .update({alert_appoint: status});
+  },
+
+  toggleAlertNews(db, memberId, status) {
+    return db('members')
+      .where('member_id', memberId)
+      .update({alert_news: status});
+  },
+
+  getAlertSetting(db, memberId) {
+    return db('members')
+      .select('alert_news', 'alert_appoint', 'alert_service')
+      .where('member_id', memberId)
+      .limit(1);
+  },
+
+  getDeviceTokenAlertAppointment(db, hns) {
+    return db('member_patients as mp')
+      .select('m.device_token')
+      .whereIn('mp.patient_hn', hns)
+      .where('m.alert_appoint', 'Y')
+      .innerJoin('members as m', 'm.member_id', 'mp.member_id');
+  },
+
+  getDeviceTokenAlertService(db, hns) {
+    return db('member_patients as mp')
+      .select('m.device_token')
+      .whereIn('mp.patient_hn', hns)
+      .where('m.alert_service', 'Y')
+      .innerJoin('members as m', 'm.member_id', 'mp.member_id');
   }
 };

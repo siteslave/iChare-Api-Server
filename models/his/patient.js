@@ -60,6 +60,7 @@ limit 100
       .whereIn('o.hn', hns)
       .whereRaw('left(d.icd10, 1) not in ("1", "2", "3", "4", "5", "6", "7", "8", "9" ,"0")')
       .where('o.vstdate', date)
+      .groupByRaw('o.hn, o.vn')
       .limit(100);
   }
 };

@@ -65,7 +65,7 @@ body(ng-app="app")
             md-subheader Notification
               md-menu-content
                 md-menu-item
-                  md-button(ui-sref="appoint")
+                  md-button(ui-sref="appoint-notify")
                     md-icon(md-menu-align-target)
                       i.material-icons date_range
                     | แจ้งเตือนนัดหมาย
@@ -75,12 +75,12 @@ body(ng-app="app")
                       i.material-icons perm_phone_msg
                     | แจ้งเตือนมารับบริการ
                 md-menu-item
-                  md-button(ng-click="changePassword($event)")
+                  md-button(ng-disabled="true")
                     md-icon(md-menu-align-target)
                       i.material-icons speaker_notes
                     | แจ้งข่าวสารโรงพยาบาล
                 md-menu-item
-                  md-button(ui-sref="hhc")
+                  md-button(ui-sref="hhc", ng-disabled="true")
                     md-icon(md-menu-align-target)
                       i.material-icons business_center
                     | เยี่ยมบ้าน (HHC)

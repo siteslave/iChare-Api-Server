@@ -31,4 +31,41 @@ router.post('/register/device', (req, res, next) => {
   
 });
 
+router.post('/toggle-alert', (req, res, next) => {
+  let db = req.db;
+  let decoded = req.decoded;
+  let memberId = decoded.memberId;
+
+  let type = req.body.type;
+  let status = req.body.status;
+  // type : 1 = news, 2 = appoint, 3 = service
+  if (type == '1') {
+    members.toggleAlertNews(db, memberId, status)
+      .then(() => res.send({ ok: true }))
+      .catch(err => res.send({ ok: false, msg: err }));
+  } else if (type == '2') {
+    members.toggleAlertAppoint(db, memberId, status)
+      .then(() => res.send({ ok: true }))
+      .catch(err => res.send({ ok: false, msg: err }));
+  } else if (type == '3') {
+    members.toggleAlertService(db, memberId, status)
+      .then(() => res.send({ ok: true }))
+      .catch(err => res.send({ ok: false, msg: err }));
+  } else {
+    res.send({ ok: false, msg: 'กรุณาระบุประเภทที่ต้องการอัปเดท' });
+  }
+  
+});
+
+router.post('/get-alert-setting', (req, res, next) => {
+  let db = req.db;
+  let decoded = req.decoded;
+  let memberId = decoded.memberId;
+
+  members.getAlertSetting(db, memberId)
+    .then(rows => res.send({ ok: true, alert: rows[0] }))
+    .catch(err => res.send({ ok: false, msg: err }));
+  
+});
+
 module.exports = router;

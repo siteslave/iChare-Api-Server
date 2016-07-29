@@ -9,7 +9,7 @@ module.exports = {
     from ipt as i
     left join ward on ward.ward=i.ward
     left join pttype as pt on pt.pttype=i.pttype
-    where i.dchdate is not null
+    where (i.dchdate is not null or i.dchdate <> '')
     and hn=?
     order by i.dchdate desc
     limit 10

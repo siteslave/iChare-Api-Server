@@ -11,11 +11,11 @@ module.exports = {
     left join drugitems as d on d.icode=op.icode
     left join drugusage as ds on ds.drugusage=op.drugusage
     where op.income='03'
-    and ccs.hn="0024559"
+    and ccs.hn=?
     and ccs.vn = (SELECT max(vn) from clinicmember_cormobidity_screen where hn=ccs.hn)
     order by d.name
     `;
 
-    return db.raw(sql, []);
+    return db.raw(sql, [hn]);
   }
 }
