@@ -1,3 +1,9 @@
+require('dotenv').config();
+
+// console.log(process.env.ICHARE_DB_HOST);
+// console.log(process.env.ICHARE_DB_PORT);
+// console.log(process.env.ICHARE_DB_USER);
+
 let express = require('express');
 let path = require('path');
 let favicon = require('serve-favicon');
