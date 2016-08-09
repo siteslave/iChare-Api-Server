@@ -3,14 +3,15 @@
 module.exports = {
 
   getDatabaseConnection() {
+    
     let db = require('knex')({
       client: 'mysql',
       connection: {
-        host: 'localhost',
-        port: 3306,
-        database: 'ichare',
-        user: 'root',
-        password: '',
+        host: process.env.ICHARE_DB_HOST,
+        port: process.env.ICHARE_DB_PORT,
+        database: process.env.ICHARE_DB_NAME,
+        user: process.env.ICHARE_DB_USER,
+        password: process.env.ICHARE_DB_PASSWORD,
         charset: 'utf8'
       }
     });
@@ -23,12 +24,11 @@ module.exports = {
     let db = require('knex')({
       client: 'mysql',
       connection: {
-        host: 'localhost',
-        port: 3306,
-        database: 'hos',
-        user: 'root',
-        password: '',
-        charset: 'utf8'
+        host: process.env.HIS_DB_HOST,
+        port: process.env.HIS_DB_PORT,
+        database: process.env.HIS_DB_NAME,
+        user: process.env.HIS_DB_USER,
+        password: process.env.HIS_DB_PASSWORD,
       }
     });
 

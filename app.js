@@ -1,3 +1,9 @@
+require('dotenv').config();
+
+// console.log(process.env.ICHARE_DB_HOST);
+// console.log(process.env.ICHARE_DB_PORT);
+// console.log(process.env.ICHARE_DB_USER);
+
 let express = require('express');
 let path = require('path');
 let favicon = require('serve-favicon');
@@ -20,9 +26,25 @@ let dialogs = require('./routes/dialogs');
 let basic = require('./routes/basic');
 let patient = require('./routes/patient');
 let members = require('./routes/members');
+// let hhc = require('./routes/hhc');
+let appointNotify = require('./routes/appoint-notify');
+let serviceNotify = require('./routes/service-notify');
 
+// API
 let apiLogin = require('./routes/api/login');
-let api1Patient = require('./routes/api/v1/patient');
+let apiPatient = require('./routes/api/patient');
+let apiMember = require('./routes/api/members');
+let apiDoctor = require('./routes/api/doctor');
+let apiAllergy = require('./routes/api/allergy');
+let apiPttype = require('./routes/api/pttype');
+let apiVaccine = require('./routes/api/vaccine');
+let apiScreening = require('./routes/api/screening');
+let apiLab = require('./routes/api/lab');
+let apiDrug = require('./routes/api/drug');
+let apiIpd = require('./routes/api/ipd');
+let apiOpd = require('./routes/api/opd');
+let apiDash = require('./routes/api/dash');
+let apiAppointment = require('./routes/api/appointment');
 
 let app = express();
 
@@ -52,7 +74,10 @@ app.use(session({
 let auth = (req, res, next) => {
   if (!req.session.logged) {
     if (req.xhr) {
-      res.send({ok: false, msg: 'Access denied', code: 401})
+      return res.status(403).send({
+          success: false,
+          msg: 'Authentication failed.'
+        });
     } else {
       res.redirect('/login')
     }
@@ -111,11 +136,25 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/login', apiLogin);
-app.use('/api/v1/patient', checkToken, api1Patient);
+app.use('/api/patient', checkToken, apiPatient);
+app.use('/api/member', checkToken, apiMember);
+app.use('/api/doctor', checkToken, apiDoctor);
+app.use('/api/allergy', checkToken, apiAllergy);
+app.use('/api/pttype', checkToken, apiPttype);
+app.use('/api/vaccine', checkToken, apiVaccine);
+app.use('/api/screening', checkToken, apiScreening);
+app.use('/api/lab', checkToken, apiLab);
+app.use('/api/drug', checkToken, apiDrug);
+app.use('/api/ipd', checkToken, apiIpd);
+app.use('/api/opd', checkToken, apiOpd);
+app.use('/api/dash', checkToken, apiDash);
+app.use('/api/appointment', checkToken, apiAppointment);
 
 app.use('/partials', auth, partials);
 app.use('/patient', auth, patient);
 app.use('/members', auth, members);
+app.use('/appoint-notify', auth, appointNotify);
+app.use('/service-notify', auth, serviceNotify);
 app.use('/dialogs', auth, dialogs);
 app.use('/users', auth, users);
 app.use('/login', login);
@@ -138,6 +177,7 @@ app.use((req, res, next) => {
 if (app.get('env') === 'development') {
   app.use((err, req, res, next) => {
     res.status(err.status || 500);
+    console.log(err);
     res.send({
       message: err.message,
       error: err
@@ -149,6 +189,7 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 app.use((err, req, res, next) => {
   res.status(err.status || 500);
+  console.log(err);
   res.send({
     message: err.message,
     error: {}

@@ -1,14 +1,13 @@
 doctype html
 html(lang="en")
 head
-  title Smart HRM System V1.0.0
+  title iChare v1.0.0
 
   meta(name="viewport", content="width=device-width, initial-scale=1")
   link(rel="stylesheet", href="/vendor/angular-material/angular-material.min.css")
   link(rel="stylesheet", href="/libs/md-icons/material-icons.css")
   link(rel="stylesheet", href="/vendor/angular-material-data-table/dist/md-data-table.min.css")
   link(rel="stylesheet", href="/css/style.css")
-
 
   script(src="/vendor/angular/angular.js")
   script(src="/vendor/angular-animate/angular-animate.min.js")
@@ -29,6 +28,13 @@ head
   script(src="/js/members/controller.js")
   script(src="/js/members/dialogs.js")
   script(src="/js/members/service.js")
+  script(src="/js/appoint-notify/controller.js")
+  script(src="/js/appoint-notify/service.js")
+  script(src="/js/service-notify/controller.js")
+  script(src="/js/service-notify/service.js")
+
+  script(src="/js/hhc/main-controller.js")
+  script(src="/js/hhc/service.js")
 
   block scripts
 
@@ -51,10 +57,33 @@ body(ng-app="app")
             md-subheader Main Menu
               md-menu-content
                 md-menu-item
-                  md-button(ui-sref="meetings")
+                  md-button(ui-sref="members")
                     md-icon(md-menu-align-target)
                       i.material-icons business_center
                     | ทะเบียนสมาชิก
+            md-divider
+            md-subheader Notification
+              md-menu-content
+                md-menu-item
+                  md-button(ui-sref="appoint-notify")
+                    md-icon(md-menu-align-target)
+                      i.material-icons date_range
+                    | แจ้งเตือนนัดหมาย
+                md-menu-item
+                  md-button(ui-sref="service-notify")
+                    md-icon(md-menu-align-target)
+                      i.material-icons perm_phone_msg
+                    | แจ้งเตือนมารับบริการ
+                md-menu-item
+                  md-button(ng-disabled="true")
+                    md-icon(md-menu-align-target)
+                      i.material-icons speaker_notes
+                    | แจ้งข่าวสารโรงพยาบาล
+                md-menu-item
+                  md-button(ui-sref="hhc", ng-disabled="true")
+                    md-icon(md-menu-align-target)
+                      i.material-icons business_center
+                    | เยี่ยมบ้าน (HHC)
             md-divider
             md-subheader Tools
               md-menu-content
