@@ -56,6 +56,8 @@ router.post('/info', (req, res, next) => {
           console.log(err);
           res.status(403).send({ ok: false, msg: 'Forbidden' });
         });
+    }, err => {
+      res.send({ ok: false, msg: err });
     });
 });
 
