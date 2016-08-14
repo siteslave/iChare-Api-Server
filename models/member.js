@@ -110,6 +110,19 @@ module.exports = {
     return db('member_patients')
       .distinct('patient_hn');
   },
+
+  saveSessionKey(db, data) {
+    return db('member_sessions')
+      .insert(data);
+  },
+
+  getSessionKey(db, memberId) {
+    return db('member_sessions')
+      .select('token', 'session_key', 'member_id')
+      .where('member_id', memberId)
+      .orderBy('id', 'desc')
+      .limit(1);
+  },
   /*****************************************************
    * API Service
    *****************************************************/
@@ -191,6 +204,12 @@ module.exports = {
       .select('alert_news', 'alert_appoint', 'alert_service')
       .where('member_id', memberId)
       .limit(1);
+  },
+
+  getDeviceToken(db, memberId) {
+    return db('members')
+      .select('device_token', 'first_name', 'last_name', 'member_id')
+      .where('member_id', memberId);
   },
 
   getDeviceTokenAlertAppointment(db, hns) {

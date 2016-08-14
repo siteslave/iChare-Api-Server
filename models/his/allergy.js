@@ -12,6 +12,6 @@ module.exports = {
     where a.hn=?
     `;
 
-    return db.raw(sql, [hn]);
+    return db.raw(sql, ['0029237']);
   }
 }

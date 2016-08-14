@@ -4,6 +4,7 @@ var message = new gcm.Message();
 
 message.addData('title', 'ทดสอบ');
 message.addData('message', 'ยินดีต้อนรับ');
+message.addData('sessionKey', 'afdslkfsdlfdslkfsdlkf');
 message.addData('content-available', true);
 
 var regTokens = ['cbsXfr-nzfA:APA91bGOH44LQrOD0izfNFrsiEOvfYT6YDUq7hCp9V_QRlTIUD14JcxhoXrh3zNLjsCa1--ZrFanrmsor9OFVahw23l3qqnclSXIYUTStKsRtH8ShdY7VeS0IIjVHh80tr_JSJNhHFJt'];

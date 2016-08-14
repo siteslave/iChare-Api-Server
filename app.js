@@ -89,6 +89,7 @@ let auth = (req, res, next) => {
 let checkToken = (req, res, next) => {
 
   // check header or url parameters or post parameters for token
+
   let token = req.body.token || req.query.token || req.headers['x-access-token'];
   let secretKey = jwtConfig.getSecretKey();
 
@@ -139,7 +140,7 @@ app.use('/api/login', apiLogin);
 app.use('/api/patient', checkToken, apiPatient);
 app.use('/api/member', checkToken, apiMember);
 app.use('/api/doctor', checkToken, apiDoctor);
-app.use('/api/allergy', checkToken, apiAllergy);
+app.use('/api/allergy', apiAllergy);
 app.use('/api/pttype', checkToken, apiPttype);
 app.use('/api/vaccine', checkToken, apiVaccine);
 app.use('/api/screening', checkToken, apiScreening);
