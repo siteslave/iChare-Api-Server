@@ -17,6 +17,36 @@ router.get('/', (req, res, next) => {
   res.send({ok: true})
 });
 
+
+router.post('/logout', (req, res, next) => {
+  let db = req.db;
+  let encryptedText = req.body.params;
+  let memberId = req.body.memberId;
+  
+  member.getSessionKey(db, memberId)
+    .then(rows => {
+      let data = rows[0];
+      let sessionKey = data.session_key;
+      let decrypted = encrypt.decrypt(encryptedText, sessionKey);
+
+      let params = JSON.parse(decrypted);
+      let token = params.token;
+
+      jwt.verify(token)
+        .then(decoded => {
+          member.removeSessionKey(db, memberId)
+            .then(rows => {
+              res.send({ ok: true });
+            })
+            .catch(err => res.send({ ok: false, msg: err }));
+          
+        }, err => {
+          console.log(err);
+          res.status(403).send({ ok: false, msg: 'Forbidden' });
+        });
+    }, err => res.send({ ok: false, msg: err }));
+});
+
 router.post('/', (req, res, next) => {
 
   // console.log(req.body);

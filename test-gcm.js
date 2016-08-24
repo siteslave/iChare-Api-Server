@@ -2,8 +2,8 @@ var gcm = require('node-gcm');
 
 var message = new gcm.Message();
 
-message.addData('title', 'ทดสอบ');
-message.addData('message', 'ยินดีต้อนรับ');
+message.addData('title', 'แจ้งเตือนนัดหมาย');
+message.addData('message', 'มีคนไข้ในความดูแลใกล้ถึงเวลานัดหมาย');
 message.addData('sessionKey', 'afdslkfsdlfdslkfsdlkf');
 message.addData('content-available', true);
 

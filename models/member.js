@@ -116,6 +116,12 @@ module.exports = {
       .insert(data);
   },
 
+  removeSessionKey(db, memberId) {
+    return db('member_sessions')
+      .where('member_id', memberId)
+      .del();
+  },
+
   getSessionKey(db, memberId) {
     return db('member_sessions')
       .select('token', 'session_key', 'member_id')

@@ -30,22 +30,36 @@ router.post('/list', (req, res, next) => {
 
       jwt.verify(token)
         .then(decoded => {
-          member.getDefaultPatient(db, memberId)
+          member.getPatientsHn(db, memberId)
             .then(rows => {
-              let hn = rows[0].patient_hn;
-              if (rows) {
-                appointment.apiGetAppointment(dbHIS, hn)
-                  .then(rows => {
-                    console.log(rows[0]);
-                    let ciphertext = encrypt.encrypt(rows[0], sessionKey);
-                    res.send({ ok: true, data: ciphertext.toString() });
-                  })
-                  .catch(err => res.send({ ok: false, msg: err }));
-              } else {
-                res.send({ ok: false, msg: 'กรุณากำหนดผู้ป่วย เริ่มด้น' });
-              }
+              let hns = [];
+              _.forEach(rows, v => {
+                hns.push(v.patient_hn);
+              });
+              
+              return appointment.apiGetAppointment(dbHIS, hns);
+            })
+            .then(rows => {
+              let ciphertext = encrypt.encrypt(rows, sessionKey);
+              res.send({ ok: true, data: ciphertext.toString() });
             })
             .catch(err => res.send({ ok: false, msg: err }));
+          // member.getDefaultPatient(db, memberId)
+          //   .then(rows => {
+          //     let hn = rows[0].patient_hn;
+          //     if (rows) {
+          //       appointment.apiGetAppointment(dbHIS, hn)
+          //         .then(rows => {
+          //           console.log(rows[0]);
+          //           let ciphertext = encrypt.encrypt(rows[0], sessionKey);
+          //           res.send({ ok: true, data: ciphertext.toString() });
+          //         })
+          //         .catch(err => res.send({ ok: false, msg: err }));
+          //     } else {
+          //       res.send({ ok: false, msg: 'กรุณากำหนดผู้ป่วย เริ่มด้น' });
+          //     }
+          //   })
+          //   .catch(err => res.send({ ok: false, msg: err }));
         }, err => {
           console.log(err);
           res.status(403).send({ ok: false, msg: 'Forbidden' });

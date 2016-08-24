@@ -137,8 +137,8 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/login', apiLogin);
-app.use('/api/patient', checkToken, apiPatient);
-app.use('/api/member', checkToken, apiMember);
+app.use('/api/patient', apiPatient);
+app.use('/api/member', apiMember);
 app.use('/api/doctor', checkToken, apiDoctor);
 app.use('/api/allergy', apiAllergy);
 app.use('/api/pttype', apiPttype);

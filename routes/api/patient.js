@@ -12,93 +12,141 @@ let members = require('../../models/member');
 let patient = require('../../models/his/patient');
 let encrypt = require('../../models/encrypt');
 
-router.get('/members', (req, res, next) => {
+router.post('/members', (req, res, next) => {
   let dbHIS = req.dbHIS;
   let db = req.db;
-  let token = req.query.token;
 
-  let decoded = req.decoded;
-  // console.log(decoded);
-
-  let memberId = decoded.memberId;
-  let hns = [];
-  let memberPatients = [];
-
-  members.getPatientMemberList(db, memberId)
+  let encryptedText = req.body.params;
+  let memberId = req.body.memberId;
+  
+  members.getSessionKey(db, memberId)
     .then(rows => {
-      let ciphertext = encrypt.encrypt(rows);
-      res.send({ ok: true, data: ciphertext.toString() });
-    })
-    .catch(err => res.send({ ok: false, msg: err }));
+      let data = rows[0];
+      let sessionKey = data.session_key;
+      let decrypted = encrypt.decrypt(encryptedText, sessionKey);
 
+      let params = JSON.parse(decrypted);
+      let token = params.token;
+
+      jwt.verify(token)
+        .then(decoded => {
+          let hns = [];
+          let memberPatients = [];
+
+          members.getPatientMemberList(db, memberId)
+            .then(rows => {
+              let ciphertext = encrypt.encrypt(rows, sessionKey);
+              res.send({ ok: true, data: ciphertext.toString() });
+            })
+            .catch(err => res.send({ ok: false, msg: err }));
+        }, err => {
+          console.log(err);
+          res.status(403).send({ ok: false, msg: 'Forbidden' });
+        });
+    }, err => res.send({ ok: false, msg: err }));
+  
 });
 
 router.post('/set-default', (req, res, next) => {
   let db = req.db;
-  let decoded = req.decoded;
-  let memberId = decoded.memberId;
   let encryptedText = req.body.params;
+  let memberId = req.body.memberId;
+  
+  members.getSessionKey(db, memberId)
+    .then(rows => {
+      let data = rows[0];
+      let sessionKey = data.session_key;
+      let decrypted = encrypt.decrypt(encryptedText, sessionKey);
 
-  console.log(encryptedText);
+      let params = JSON.parse(decrypted);
+      let token = params.token;
 
-  let decrypted = encrypt.decrypt(encryptedText);
-  console.log(decrypted);
-  let params = JSON.parse(decrypted);
-
-  // console.log(params);
-
-  if (memberId && params.hashKey) {
-    members.clearDefault(db, memberId)
-      .then(() => {
-        return members.setDefault(db, memberId, params.hashKey);
-      })
-      .then(() => res.send({ ok: true }))
-      .catch(err => res.send({ ok: false, msg: err }));
-  }
+      jwt.verify(token)
+        .then(decoded => {
+            if (memberId && params.hashKey) {
+              members.clearDefault(db, memberId)
+                .then(() => {
+                  return members.setDefault(db, memberId, params.hashKey);
+                })
+                .then(() => res.send({ ok: true }))
+                .catch(err => res.send({ ok: false, msg: err }));
+            } else {
+              res.send({ ok: false, msg: 'Invalid member id and hash key' });
+          }
+        }, err => {
+          console.log(err);
+          res.status(403).send({ ok: false, msg: 'Forbidden' });
+        });
+    }, err => res.send({ ok: false, msg: err }));
 });
 
 router.post('/save-photo', (req, res, next) => {
   let db = req.db;
 
-  let decoded = req.decoded;
-  let memberId = decoded.memberId;
-
   let encryptedText = req.body.params;
+  let memberId = req.body.memberId;
+  
+  members.getSessionKey(db, memberId)
+    .then(rows => {
+      let data = rows[0];
+      let sessionKey = data.session_key;
+      let decrypted = encrypt.decrypt(encryptedText, sessionKey);
 
-  // console.log(encryptedText);
+      let params = JSON.parse(decrypted);
+      let token = params.token;
 
-  let decrypted = encrypt.decrypt(encryptedText);
-  let params = JSON.parse(decrypted);
-  console.log(params.hashKey);
-
-  members.savePhoto(db, memberId, params.hashKey, params.image)
-    .then(() => res.send({ ok: true }))
-    .catch(err => res.send({ ok: false, msg: err }));
+      jwt.verify(token)
+        .then(decoded => {
+            
+          members.savePhoto(db, memberId, params.hashKey, params.image)
+            .then(() => res.send({ ok: true }))
+            .catch(err => res.send({ ok: false, msg: err }));
+          
+        }, err => {
+          console.log(err);
+          res.status(403).send({ ok: false, msg: 'Forbidden' });
+        });
+    }, err => res.send({ ok: false, msg: err }));  
+  
 });
 
 router.post('/get-barcode', (req, res, next) => {
 
-  let encryptedText = req.body.params;
-  console.log(req.body.params);
-  // console.log(encryptedText);
+  let db = req.db;
 
-  let decrypted = encrypt.decrypt(encryptedText);
-  // console.log(decrypted);
-  let params = JSON.parse(decrypted);
-  console.log(params.hashKey);
-  // let hashKey = params.hashKey;
-  // console.log(haskKey);
-  let code39 = barcode('code128', {
-    data: params.hashKey,
-    width: 400,
-    height: 100,
-  });
+  let encryptedText = req.body.params;
+  let memberId = req.body.memberId;
   
-  code39.getBase64((err, imgsrc) => {
-    console.log(imgsrc);
-    if (err) res.send({ ok: false, msg: err });
-    else res.send({ ok: true, img: imgsrc });
-  });
+  members.getSessionKey(db, memberId)
+    .then(rows => {
+      let data = rows[0];
+      let sessionKey = data.session_key;
+      let decrypted = encrypt.decrypt(encryptedText, sessionKey);
+
+      let params = JSON.parse(decrypted);
+      let token = params.token;
+      let hashKey = params.hashKey;
+
+      jwt.verify(token)
+        .then(decoded => {
+    
+          let code39 = barcode('code128', {
+            data: hashKey,
+            width: 400,
+            height: 100,
+          });
+  
+          code39.getBase64((err, imgsrc) => {
+            // console.log(imgsrc);
+            if (err) res.send({ ok: false, msg: err });
+            else res.send({ ok: true, img: imgsrc });
+          });
+          
+        }, err => {
+          console.log(err);
+          res.status(403).send({ ok: false, msg: 'Forbidden' });
+        });
+    }, err => res.send({ ok: false, msg: err }));  
 
 });
 
